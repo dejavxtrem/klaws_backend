@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 
 
 const userSchema =  mongoose.Schema({
+    name: {type: String},
+    avatar: {type: String},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true}
 }, {timestamp: true})
@@ -48,6 +50,12 @@ userSchema.methods.comparePassword = function (userPassword) {
                     resolve(true)
             })
     })
+}
+
+userSchema.methods.withoutPassword = function () {
+    const user = this.toObject()
+    delete user.password
+    return user;
 }
 
 module.exports = mongoose.model('User', userSchema)

@@ -8,12 +8,13 @@ const serviceSchema = new mongoose.Schema({
         address: {type: String, required: true},
         servicePrice: {type: String, required: true},
         serviceTime: {type: String, required: true},
-        servicePhoto: {type: String, required: true}
+        servicePhoto: [String]
     }
 })
 
 
 const NailTech = new mongoose.Schema({
+    avatar: {type: String},
     name: {type: String, required: true},
     email: {type: String, required: true},
     salonname: {type: String, required:true},

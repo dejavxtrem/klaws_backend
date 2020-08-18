@@ -2,9 +2,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 require('dotenv').config()
-const cors = require('cors')
-const app = express()
+require('./models/User')
 
+//router import
+
+
+
+const app = express()
+const cors = require('cors')
 
 //.env config
 const PORT = process.env.PORT || 9000
@@ -17,6 +22,7 @@ app.use(cors());
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('tiny'))
 app.use(express.json())
+
 
 
 //controllers
