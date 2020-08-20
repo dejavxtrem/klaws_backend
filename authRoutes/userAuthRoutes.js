@@ -19,7 +19,7 @@ userRouter.post('/user/signup', (req, res, next) => {
         }
 
         const newUser = new User(req.body)
-    newUser.save(() => {
+        newUser.save(() => {
         if (err) return  res.status(500).send({success: false, err})
         const token = jwt.sign(newUser.withoutPassword(), process.env.SECRET)
         return res.status(201).send({
