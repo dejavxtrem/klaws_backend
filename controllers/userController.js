@@ -2,6 +2,8 @@ const express = require("express")
 const userControllerRouter = express.Router()
 const User = require('../models/User')
 
+
+
 //get User information
 userControllerRouter.get('/:id',  async (req, res) => {
     const id = req.params.id
@@ -17,6 +19,10 @@ userControllerRouter.get('/:id',  async (req, res) => {
         res.status(200).json(userDetails) 
     })
 })
+
+//posting user image
+
+
 
 //update user information
 userControllerRouter.put('/:id', async (req, res) => {
