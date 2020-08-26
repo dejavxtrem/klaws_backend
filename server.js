@@ -3,32 +3,39 @@ const mongoose = require('mongoose')
 const morgan = require('morgan')
 require('dotenv').config()
 const expressJwt = require("express-jwt")
+const cors = require('cors')
+
 
 
 //router import
 const userRouter = require('./authRoutes/userAuthRoutes')
 const userControllerRouter = require('./controllers/userController')
+const userAvatarRouter = require('./controllers/userAvatar')
 
 
 const app = express()
-const cors = require('cors')
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
+app.use(cors());
+app.use(morgan("tiny"))
+
 
 //.env config
 const PORT = process.env.PORT || 9000
 const mongoURI = process.env.MONGODB_URI
 
-app.use(cors());
+
+
 
 
 //middleware
 app.use("/api", expressJwt({secret: process.env.SECRET, algorithms: ['HS256']}))
 app.use('/auth', userRouter)
-app.use(express.urlencoded({extended: true}))
-app.use(morgan("tiny"))
-app.use(express.json())
+app.use('/upload', express.static('uploads'));
 //User authentication Router
 
 app.use("/api/useraccount", userControllerRouter)
+app.use("/api/useravatar", userAvatarRouter)
 
 app.use((err, req, res, next) => {
     console.error(err);
