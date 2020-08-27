@@ -7,10 +7,14 @@ const cors = require('cors')
 
 
 
-//router import
+//Auth route import
 const userRouter = require('./authRoutes/userAuthRoutes')
+const nailTechRouter = require('./authRoutes/nailArtistAuthRoute')
+
+//Account profile imports
 const userControllerRouter = require('./controllers/userController')
 const userAvatarRouter = require('./controllers/userAvatar')
+
 
 
 const app = express()
@@ -30,10 +34,14 @@ const mongoURI = process.env.MONGODB_URI
 
 //middleware
 app.use("/api", expressJwt({secret: process.env.SECRET, algorithms: ['HS256']}))
+//auth router middleware
 app.use('/auth', userRouter)
-app.use('/upload', express.static('uploads'));
-//User authentication Router
+app.use('/nailauth', nailTechRouter)
 
+app.use('/upload', express.static('uploads'));
+
+
+//User profile Router
 app.use("/api/useraccount", userControllerRouter)
 app.use("/api/useravatar", userAvatarRouter)
 

@@ -1,25 +1,57 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
-const serviceSchema = new mongoose.Schema({
-    serviceType: {type: String, required: true},
-    service: {
-        serviceName: {type: String, required: true},
-        address: {type: String, required: true},
-        servicePrice: {type: String, required: true},
-        serviceTime: {type: String, required: true},
-        servicePhoto: [String]
-    }
-})
-
-
-const NailTech = new mongoose.Schema({
+const nailTechSchema =  mongoose.Schema({
     avatar: {type: String},
     name: {type: String, required: true},
     email: {type: String, required: true},
     salonname: {type: String, required:true},
     password: {type: String, required:true},
-    serviceType: [serviceSchema]
 }, {timestamp: true})
 
 
+nailTechSchema.pre('save', function(next) {
+    const nailTech = this
+    if (!nailTech.isModified('password')) {
+        return next()
+    }
+
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+            return next(err)
+        }
+
+        bcrypt.hash(nailTech.password, salt, (err, hash) => {
+            if (err) {
+                return next(err)
+            }
+            nailTech.password = hash;
+            next()
+            
+        })
+    })
+})
+
+nailTechSchema.methods.comparePassword = function (nailTechPassword) {
+    const nailTech = this
+    return new Promise((resolve, reject) => {
+            bcrypt.compare(nailTechPassword, nailTech.password, (err, isMatch) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    if (!isMatch) {
+                        return  reject(false)
+                    }
+                    resolve(true)
+            })
+    })
+}
+
+nailTechSchema.methods.withoutPassword = function () {
+    const nailTech = this.toObject()
+    delete nailTech.password
+    return nailTech;
+}
+
+
+module.exports = mongoose.model('nailArtist', nailTechSchema)
