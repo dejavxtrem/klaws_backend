@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const nailArtist = require('./NailTech')
 
 const serviceSchema = new mongoose.Schema({
     serviceType: {type: String, required: true},
@@ -8,5 +9,12 @@ const serviceSchema = new mongoose.Schema({
         servicePrice: {type: String, required: true},
         serviceTime: {type: String, required: true},
         servicePhoto: [String]
+    },
+    artistId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'nailArtist'
     }
 })
+
+module.exports = mongoose.model('nailservice', serviceSchema)
