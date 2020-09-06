@@ -10,7 +10,8 @@ const userSchema =  mongoose.Schema({
     password: {type: String, required: true},
     userLocation: {
         userLat: { type: String},
-        userLong: {type: String}
+        userLong: {type: String},
+        accuracy:{type: String}
     }
 }, {timestamp: true})
 
