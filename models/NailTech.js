@@ -7,6 +7,10 @@ const nailTechSchema =  mongoose.Schema({
     email: {type: String, required: true},
     salonname: {type: String, required:true},
     password: {type: String, required:true},
+    artistLocation: {
+        artistLat: {type: String},
+        artistLong: {type: String}
+    }
 }, {timestamp: true})
 
 
