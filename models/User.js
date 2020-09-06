@@ -7,7 +7,11 @@ const userSchema =  mongoose.Schema({
     name: {type: String},
     avatar: {type: String},
     email: {type: String, required: true, unique: true},
-    password: {type: String, required: true}
+    password: {type: String, required: true},
+    userLocation: {
+        userLat: { type: String},
+        userLong: {type: String}
+    }
 }, {timestamp: true})
 
 
