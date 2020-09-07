@@ -8,7 +8,7 @@ const userRouter = express.Router();
 userRouter.post("/user/signup", (req, res, next) => {
   console.log(req.body);
   //console.log(req.body)
-  User.findOne({ email: req.body.email.toLowerCase() }, (err, existingUser) => {
+  User.findOne({ email: req.body.email}, (err, existingUser) => {
     if (err) {
       res.status(500);
       return next(err);
