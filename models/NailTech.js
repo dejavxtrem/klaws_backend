@@ -14,57 +14,49 @@ const nailTechSchema =  mongoose.Schema({
     zipcode: {type: String, required: true},
     openinghour: {type: String, required: true},
     closinghour: {type: String, requied: true},
-    artistLocation: {
-        artistLat: {type: String},
-        artistLong: {type: String},
-        accuracy:{type: String}
-    },
-
 }, {timestamp: true})
 
 
-nailTechSchema.pre('save', function(next) {
-    const nailTech = this
-    if (!nailTech.isModified('password')) {
-        return next()
+nailTechSchema.pre("save", function (next) {
+  const nailTech = this;
+  if (!nailTech.isModified("password")) {
+    return next();
+  }
+
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return next(err);
     }
 
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-            return next(err)
-        }
-
-        bcrypt.hash(nailTech.password, salt, (err, hash) => {
-            if (err) {
-                return next(err)
-            }
-            nailTech.password = hash;
-            next()
-            
-        })
-    })
-})
+    bcrypt.hash(nailTech.password, salt, (err, hash) => {
+      if (err) {
+        return next(err);
+      }
+      nailTech.password = hash;
+      next();
+    });
+  });
+});
 
 nailTechSchema.methods.comparePassword = function (nailTechPassword) {
-    const nailTech = this
-    return new Promise((resolve, reject) => {
-            bcrypt.compare(nailTechPassword, nailTech.password, (err, isMatch) => {
-                    if (err) {
-                        return reject(err)
-                    }
-                    if (!isMatch) {
-                        return  reject(false)
-                    }
-                    resolve(true)
-            })
-    })
-}
+  const nailTech = this;
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(nailTechPassword, nailTech.password, (err, isMatch) => {
+      if (err) {
+        return reject(err);
+      }
+      if (!isMatch) {
+        return reject(false);
+      }
+      resolve(true);
+    });
+  });
+};
 
 nailTechSchema.methods.withoutPassword = function () {
-    const nailTech = this.toObject()
-    delete nailTech.password
-    return nailTech;
-}
+  const nailTech = this.toObject();
+  delete nailTech.password;
+  return nailTech;
+};
 
-
-module.exports = mongoose.model('nailArtist', nailTechSchema)
+module.exports = mongoose.model("nailArtist", nailTechSchema);
