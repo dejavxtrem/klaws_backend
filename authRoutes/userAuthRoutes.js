@@ -8,7 +8,7 @@ const userRouter = express.Router();
 userRouter.post("/user/signup", (req, res, next) => {
   console.log(req.body);
   //console.log(req.body)
-  User.findOne({ email: req.body.email}, (err, existingUser) => {
+  User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) {
       res.status(500);
       return next(err);
@@ -17,7 +17,6 @@ userRouter.post("/user/signup", (req, res, next) => {
       res.status(400);
       return next(new Error("That username already exists!"));
     }
-
     const newUser = new User(req.body);
     newUser.save(() => {
       if (err) return res.status(500).send({ success: false, err });
