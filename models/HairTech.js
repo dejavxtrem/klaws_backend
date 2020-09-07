@@ -6,7 +6,6 @@ const hairTechSchema =  mongoose.Schema({
     name: {type: String, required: true},
     email: {type: String, required: true},
     password: {type: String, required:true},
-    artistAvater: {type: String},
     salonname: {type: String, required:true},
     address: {type: String, required: true},
     city: { type: String, required: true},
@@ -14,11 +13,9 @@ const hairTechSchema =  mongoose.Schema({
     zipcode: {type: String, required: true},
     openinghour: {type: String, required: true},
     closinghour: {type: String, requied: true},
-    artistLocation: {
-        artistLat: {type: String},
-        artistLong: {type: String},
-        accuracy:{type: String}
-    }
+    artistLat: { type: String },
+    artistLong: { type: String },
+    accuracy: { type: String },
 }
 , {timestamp: true})
 
