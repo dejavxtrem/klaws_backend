@@ -5,14 +5,21 @@ const nailTechSchema =  mongoose.Schema({
     avatar: {type: String},
     name: {type: String, required: true},
     email: {type: String, required: true},
-    salonname: {type: String, required:true},
     password: {type: String, required:true},
+    artistAvater: {type: String},
+    salonname: {type: String, required:true},
+    address: {type: String, required: true},
+    city: { type: String, required: true},
+    state: { type: String, required: true},
+    zipcode: {type: String, required: true},
+    openinghour: {type: String, required: true},
+    closinghour: {type: String, requied: true},
     artistLocation: {
         artistLat: {type: String},
         artistLong: {type: String},
         accuracy:{type: String}
+    },
 
-    }
 }, {timestamp: true})
 
 
