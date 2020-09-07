@@ -60,4 +60,4 @@ makeUpArtist.methods.withoutPassword = function () {
 }
 
 
-module.exports = mongoose.model('hairArtist', makeUpArtist)
+module.exports = mongoose.model('makeUpArtist', makeUpArtist)
