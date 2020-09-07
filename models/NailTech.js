@@ -14,7 +14,11 @@ const nailTechSchema =  mongoose.Schema({
     zipcode: {type: String, required: true},
     openinghour: {type: String, required: true},
     closinghour: {type: String, requied: true},
+    artistLat: { type: String },
+    artistLong: { type: String },
+    accuracy: { type: String },
 }, {timestamp: true})
+
 
 
 nailTechSchema.pre("save", function (next) {
