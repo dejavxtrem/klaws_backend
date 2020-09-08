@@ -14,6 +14,8 @@ const nailTechRouter = require('./authRoutes/nailArtistAuthRoute')
 //Account profile imports
 const userControllerRouter = require('./controllers/userController')
 const userAvatarRouter = require('./controllers/userAvatar')
+const nailServiceRouter = require('./controllers/addNailService')
+
 
 
 
@@ -44,6 +46,7 @@ app.use('/upload', express.static('uploads'));
 //User profile Router
 app.use("/api/useraccount", userControllerRouter)
 app.use("/api/useravatar", userAvatarRouter)
+app.use("/api/nailartist", nailServiceRouter )
 
 app.use((err, req, res, next) => {
     console.error(err);

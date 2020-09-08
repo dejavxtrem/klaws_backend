@@ -6,32 +6,76 @@ const multer = require('multer')
 const nailServiceRouter = express.Router()
 
 
+//multer image setup
+const Storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/postserviceimage');
+      },
+    filename(req, file, cb) {
+        cb(null, Date.now() + file.originalname)
+    },
+  })
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
+}
 
 
-nailServiceRouter.get('/nailService', async (req, res) => {
-    const  postService = await nailService.find({artistId: req.artistId._id})
-    res.send(postService)
+const upload = multer({
+    storage: Storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+
 })
 
+////////////
 
-nailServiceRouter.post('/nailService', async (req, res) => {
-    console.log('body', req.body) 
-    const {serviceBody} = req.body
+// nailServiceRouter.get('/nailService', async (req, res) => {
+//     const  postService = await nailService.find({artistId: req.artistId._id})
+//     res.send(postService)
+// })
 
-    if (!serviceBody) {
-        res.status(422).send({error: "No service posted"})
-    }
-    
+
+nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (req, res, next) => {
+     console.log('body', req.files) 
+
+    nailService.findOne({serviceName: req.body.serviceName}, (err, serviceFound) => {
+        if (err) {
+                 return res.status(500)             
+             }
+        if(serviceFound !== null) {
+                 res.status(400).send("service already exist")
+             }
+         })
+         
+    const filePath = req.files
+    const newArray = []
+    filePath.forEach((pathName) => {
+        newArray.push(pathName.path)
+    })
+
     try {
-        const serviceBody = new nailService({
-            serviceType : req.serviceType,
-            service: req.service,
-            artistId: req.artistId._id
+        const serviceDetails = new nailService ({
+            serviceType : req.body.serviceType,
+            serviceName: req.body.serviceName,
+            address: req.body.address,
+            servicePrice: req.body.servicePrice,
+            serviceTime: req.body.serviceTime,
+            artistId: req.body.artistId,
+            servicePhoto: newArray
         })
-        await serviceBody.save()
-        res.status(200).json(serviceBody)
+        await serviceDetails.save()
+        res.status(200).send(serviceDetails)
     } catch (err) {
-        res.status(500).json({error: err.message})
+        res.send({error: err.message})
     }
 
 })
+
+module.exports = nailServiceRouter
