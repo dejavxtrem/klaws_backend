@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const nailArtist = require('./NailTech')
+const { model } = require('./NailTech')
 
 const serviceSchema = new mongoose.Schema({
         serviceType: {type: String, required: true},

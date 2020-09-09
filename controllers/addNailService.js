@@ -34,11 +34,31 @@ const upload = multer({
 
 })
 
-////////////
+//////////
+ 
 
-// nailServiceRouter.get('/nailService', async (req, res) => {
-//     const  postService = await nailService.find({artistId: req.artistId._id})
-//     res.send(postService)
+
+nailServiceRouter.get('/nailService', async (req, res) => {
+    console.log(req.body)
+    const id = "5f5616c23644190d20dbec7e"
+    const  postService = await nailService.find({artistId: req.nailArtist._id})
+    res.send(postService)
+})
+
+
+
+// nailServiceRouter.get('/nailService/:id', async (req, res) => {
+//         id = req.params.id
+//         if (!id) {
+//             res.status(400).json({message: "no service type found"})
+//         }
+
+//         try {
+//             const service = await nailService.find({artistId: req.artistId})
+//             res.status(200).json(service)
+//         } catch (err) {
+//             res.status(500).send({error: err.message})
+//         }
 // })
 
 
@@ -67,7 +87,7 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
             address: req.body.address,
             servicePrice: req.body.servicePrice,
             serviceTime: req.body.serviceTime,
-            artistId: req.body.artistId,
+            artistId: req.nailArtist._id,
             servicePhoto: newArray
         })
         await serviceDetails.save()
