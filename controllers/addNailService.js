@@ -98,12 +98,29 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
 
 
 
-//delete a service
-
-
-
-
-
 //update a service
+nailServiceRouter.put('/nailService/:id', async (req, res) => {
+    
+})
+
+
+
+
+//delete a service
+nailServiceRouter.delete('/nailService/:id', async (req, res) => {
+    if (artistId === req.user._id) {
+        await  nailService.findByIdAndRemove(req.params.id, (err, foundService) => {
+            if (err) {
+                res.status(400).send({error: err.message})
+            }
+                res.status(200).send(foundService)
+        })
+    }
+})
+
+
+
+
+
 
 module.exports = nailServiceRouter

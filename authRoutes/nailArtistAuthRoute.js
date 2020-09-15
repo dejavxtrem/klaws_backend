@@ -2,31 +2,86 @@ const express = require("express");
 const mongoose = require("mongoose");
 const nailArtist = require("../models/NailTech");
 const jwt = require("jsonwebtoken");
+const multer = require('multer')
 
 const nailTechRouter = express.Router();
 
-nailTechRouter.post("/nailtech/signup", (req, res, next) => {
-  nailArtist.findOne({ email: req.body.email }, (err, existingTech) => {
-    if (err) {
-      res.status(500);
-      return next(err);
-    }
-    if (existingTech !== null) {
-      res.status(400);
-      return next(new Error("That email already exists!"));
-    }
 
-    const newArtist = new nailArtist(req.body);
-    newArtist.save(() => {
-      if (err) return res.status(500).send({ success: false, err });
-      const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
-      return res.status(201).send({
-        success: true,
-        nailTech: newArtist.withoutPassword(),
-        token,
+const Storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+      cb(null, 'uploads/nailartistavatar');
+    },
+  filename(req, file, cb) {
+      cb(null, Date.now() + file.originalname)
+  },
+})
+
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+      cb(null, true)
+  } else {
+      cb(null, false)
+  }
+}
+
+const upload = multer({
+  storage: Storage,
+  limits: {
+      fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+
+})
+
+
+nailTechRouter.post("/nailtech/signup",  upload.single('avatar'),  (req, res) => {
+  console.log('body', req.body)
+
+  try {
+    nailArtist.findOne({ email: req.body.email }, (err, existingTech) => {
+      if (err) {
+        res.status(500);
+        return next(err);
+      }
+      if (existingTech !== null) {
+        res.status(400);
+        return next(new Error("That email already exists!"));
+      }
+  
+      const newArtist =  new nailArtist({
+        avatar: req.file.path,
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        salonname: req.body.salonname,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        zipcode: req.body.zipcode,
+        openinghour: req.body.openinghour,
+        closinghour: req.body.closinghour,
+        artistLat: req.body.artistLat,
+        artistLong: req.body.artistLong,
+        accuracy: req.body.accuracy
       });
+
+      newArtist.save(() => {
+        if (err) return res.status(500).send({ success: false, err });
+        const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
+        return res.status(201).send({
+          success: true,
+          nailTech: newArtist.withoutPassword(),
+          token,
+        });
+      });
+
     });
-  });
+  } catch (err) {
+      res.status(500).json({error: err.message})
+  }
+
+ 
 });
 
 nailTechRouter.post("/nailtech/login", (req, res) => {
