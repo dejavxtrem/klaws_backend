@@ -17,6 +17,7 @@ nailTechRouter.post("/nailtech/signup", (req, res, next) => {
     }
 
     const newArtist = new nailArtist(req.body);
+    console.log(req.body);
     newArtist.save(() => {
       if (err) return res.status(500).send({ success: false, err });
       const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
