@@ -35,11 +35,10 @@ const upload = multer({
 })
 
 
-nailTechRouter.post("/nailtech/signup",  upload.single('avatar'),  (req, res) => {
+nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => {
   console.log('body', req.body)
 
-  try {
-    nailArtist.findOne({ email: req.body.email }, (err, existingTech) => {
+    nailArtist.findOne({ email: req.body.email }, async (err, existingTech) => {
       if (err) {
         res.status(500);
         return next(err);
@@ -49,37 +48,38 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'),  (req, res) =>
         return next(new Error("That email already exists!"));
       }
   
-      const newArtist =  new nailArtist({
-        avatar: req.file.path,
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        salonname: req.body.salonname,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        zipcode: req.body.zipcode,
-        openinghour: req.body.openinghour,
-        closinghour: req.body.closinghour,
-        artistLat: req.body.artistLat,
-        artistLong: req.body.artistLong,
-        accuracy: req.body.accuracy
-      });
+      try {
 
-      newArtist.save(() => {
-        if (err) return res.status(500).send({ success: false, err });
+        const newArtist =  new nailArtist({
+          avatar: req.file.path,
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          salonname: req.body.salonname,
+          address: req.body.address,
+          city: req.body.city,
+          state: req.body.state,
+          zipcode: req.body.zipcode,
+          openinghour: req.body.openinghour,
+          closinghour: req.body.closinghour,
+          artistLat: req.body.artistLat,
+          artistLong: req.body.artistLong,
+          accuracy: req.body.accuracy
+        });
+  
+        await nailArtist.save()
         const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
         return res.status(201).send({
           success: true,
           nailTech: newArtist.withoutPassword(),
           token,
         });
-      });
 
+      } catch (err) {
+        if (err) return res.status(500).send({ success: false, err });
+      }
     });
-  } catch (err) {
-      res.status(500).json({error: err.message})
-  }
+   
 
  
 });
