@@ -37,8 +37,9 @@ const upload = multer({
 
 nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => {
   console.log('body', req.body)
+  console.log('file', req.file)
 
-    nailArtist.findOne({ email: req.body.email }, async (err, existingTech) => {
+  nailArtist.findOne({ email: req.body.email }, async (err, existingTech) => {
       if (err) {
         res.status(500);
         return next(err);
@@ -49,10 +50,10 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
       }
   
       try {
-
         const newArtist =  new nailArtist({
           avatar: req.file.path,
           name: req.body.name,
+          type: req.body.type,
           email: req.body.email,
           password: req.body.password,
           salonname: req.body.salonname,
@@ -67,7 +68,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
           accuracy: req.body.accuracy
         });
   
-        await nailArtist.save()
+        await newArtist.save()
         const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
         return res.status(201).send({
           success: true,
@@ -76,7 +77,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
         });
 
       } catch (err) {
-        if (err) return res.status(500).send({ success: false, err });
+        if (err) return res.status(500).send({ success: false, err: err.message });
       }
     });
    
