@@ -3,17 +3,42 @@ const mongoose = require("mongoose");
 const nailArtist = require("../models/NailTech");
 const jwt = require("jsonwebtoken");
 const multer = require('multer')
+const aws = require( 'aws-sdk' );
+const multerS3 = require( 'multer-s3' );
 
 const nailTechRouter = express.Router();
 
 
-const Storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-      cb(null, 'uploads/nailartistavatar');
-    },
-  filename(req, file, cb) {
-      cb(null, Date.now() + file.originalname)
-  },
+//storing image in amazon S3
+const s3 = new aws.S3({
+	accessKeyId: process.env.ACCESSKEYID,
+	secretAccessKey: process.env.SECRETACCESSKEY,
+	Bucket: process.env.BUCKET
+});
+
+
+
+
+
+// const Storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//       cb(null, 'uploads/nailartistavatar');
+//     },
+//   filename(req, file, cb) {
+//       cb(null, Date.now() + file.originalname)
+//   },
+// })
+
+
+const Storage = multerS3({
+      s3:s3,
+      bucket: process.env.BUCKET,
+      acl: 'public-read',
+      key:  function(req, file, cb) {
+              cb(null, Date.now() + file.originalname)
+          }
+
+
 })
 
 
@@ -28,7 +53,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: Storage,
   limits: {
-      fileSize: 1024 * 1024 * 5
+      fileSize: { fileSize: 2000000 }
   },
   fileFilter: fileFilter
 
@@ -51,7 +76,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
   
       try {
         const newArtist =  new nailArtist({
-          avatar: req.file.path,
+          avatar: req.file.location,
           name: req.body.name,
           type: req.body.type,
           email: req.body.email,
