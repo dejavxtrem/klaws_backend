@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const { model } = require('./NailTech')
 
 const serviceSchema = new mongoose.Schema({
-        serviceType: {type: String, required: true},
-        serviceName: {type: String, required: true},
-        address: {type: String, required: true},
-        servicePrice: {type: String, required: true},
-        serviceTime: {type: String, required: true},
+        serviceType: {type: String},
+        serviceName: {type: String},
+        address: {type: String},
+        servicePrice: {type: String},
+        serviceTime: {type: String},
         servicePhoto: [String],
         artistId: {
         type: mongoose.Schema.Types.ObjectId,

@@ -3,37 +3,81 @@ const nailServiceRouter = express.Router()
 const nailService = require('../models/addService')
 const mongoose = require("mongoose");
 const multer = require('multer')
+const aws = require( 'aws-sdk' );
+const multerS3 = require( 'multer-s3' );
 
 
 
+//storing image in amazon S3
+const s3 = new aws.S3({
+	accessKeyId: process.env.ACCESSKEYID,
+	secretAccessKey: process.env.SECRETACCESSKEY,
+	Bucket: process.env.ADDSERVICEBUCKET
 
-//multer image setup
-const Storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'uploads/postserviceimage');
-      },
-    filename(req, file, cb) {
-        cb(null, Date.now() + file.originalname)
-    },
-  })
+});
 
-const fileFilter = (req, file, cb) => {
+
+
+const Storage = multerS3({
+    s3:s3,
+    bucket: process.env.ADDSERVICEBUCKET,
+    acl: 'public-read',
+    key:  function(req, file, cb) {
+            cb(null, Date.now() + file.originalname)
+        }
+
+
+})
+
+
+    const fileFilter = (req, file, cb) => {
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
         cb(null, true)
     } else {
         cb(null, false)
     }
-}
+    }
 
-
-const upload = multer({
+    const upload = multer({
     storage: Storage,
     limits: {
-        fileSize: 1024 * 1024 * 5
+        fileSize: { fileSize: 2000000 }
     },
     fileFilter: fileFilter
 
-})
+    })
+
+
+
+
+
+// //multer image setup
+// // const Storage = multer.diskStorage({
+// //     destination: function(req, file, cb) {
+// //         cb(null, 'uploads/postserviceimage');
+// //       },
+// //     filename(req, file, cb) {
+// //         cb(null, Date.now() + file.originalname)
+// //     },
+// //   })
+
+// const fileFilter = (req, file, cb) => {
+//     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+//         cb(null, true)
+//     } else {
+//         cb(null, false)
+//     }
+// }
+
+
+// const upload = multer({
+//     storage: Storage,
+//     limits: {
+//         fileSize: 1024 * 1024 * 5
+//     },
+//     fileFilter: fileFilter
+
+// })
 
 //////////
  
@@ -63,6 +107,7 @@ nailServiceRouter.get('/nailService/:id', async (req, res) => {
 
 //post new service
 nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (req, res, next) => {
+    console.log(req.files)
     nailService.findOne({serviceName: req.body.serviceName}, (err, serviceFound) => {
         if (err) {
                  return res.status(500)             
@@ -75,7 +120,7 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
     const filePath = req.files
     const newArray = []
     filePath.forEach((pathName) => {
-        newArray.push(pathName.path)
+        newArray.push(pathName.location)
     })
 
     try {
