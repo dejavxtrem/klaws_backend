@@ -33,6 +33,7 @@ const s3 = new aws.S3({
 const Storage = multerS3({
       s3:s3,
       bucket: process.env.BUCKET,
+      contentType: multerS3.AUTO_CONTENT_TYPE,
       acl: 'public-read',
       key:  function(req, file, cb) {
               cb(null, Date.now() + file.originalname)
@@ -53,7 +54,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: Storage,
   limits: {
-      fileSize: { fileSize: 2000000 }
+      fileSize: { fileSize: 5000000 }
   },
   fileFilter: fileFilter
 
@@ -61,8 +62,9 @@ const upload = multer({
 
 
 nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => {
-  console.log('body', req.body)
-  console.log('file', req.file)
+  //console.log('body', req.body)
+  //console.log('file', req.file)
+
 
   nailArtist.findOne({ email: req.body.email }, async (err, existingTech) => {
       if (err) {
@@ -71,7 +73,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
       }
       if (existingTech !== null) {
         res.status(400);
-        return next(new Error("That email already exists!"));
+        return next (new Error("That email already exists!"));
       }
   
       try {
@@ -94,6 +96,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
         });
   
         await newArtist.save()
+        console.log(newArtist)
         const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
         return res.status(201).send({
           success: true,
