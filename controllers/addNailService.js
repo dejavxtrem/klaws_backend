@@ -25,13 +25,11 @@ const Storage = multerS3({
     key:  function(req, file, cb) {
             cb(null, Date.now() + file.originalname)
         }
-
-
 })
 
 
     const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
         cb(null, true)
     } else {
         cb(null, false)
@@ -108,6 +106,7 @@ nailServiceRouter.get('/nailService/:id', async (req, res) => {
 //post new service
 nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (req, res, next) => {
     console.log(req.files)
+    //console.log(req.body)
     nailService.findOne({serviceName: req.body.serviceName}, (err, serviceFound) => {
         if (err) {
                  return res.status(500)             
@@ -144,9 +143,7 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
 
 
 //update a service
-nailServiceRouter.put('/nailService/:id', async (req, res) => {
-    
-})
+
 
 
 

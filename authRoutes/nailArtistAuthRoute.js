@@ -43,7 +43,7 @@ const Storage = multerS3({
 
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
       cb(null, true)
   } else {
       cb(null, false)
@@ -61,7 +61,7 @@ const upload = multer({
 
 
 nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => {
-  //console.log('body', req.body)
+  console.log('body', req.body)
   //console.log('file', req.file)
 
 
@@ -95,7 +95,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
         });
   
         await newArtist.save()
-        console.log(newArtist)
+       // console.log(newArtist)
         const token = jwt.sign(newArtist.withoutPassword(), process.env.SECRET);
         return res.status(201).send({
           success: true,
@@ -104,6 +104,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
         });
 
       } catch (err) {
+        console.log(err)
         if (err) return res.status(500).send({ success: false, err: err.message });
       }
     });
@@ -151,5 +152,23 @@ nailTechRouter.get("/artist", (req, res) => {
     return res.send({ success: true, artist });
   });
 });
+
+
+nailTechRouter.put('/artist/:id', async (req, res, next) => {
+ const nailTechUpdate = await nailArtist.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  if (!nailTechUpdate) {
+    return next(
+      new Error(`No nailartist found`)
+    )
+  }
+ res.status(200).send({success: true, nailTechUpdate})
+
+})
+
+
+
+
+
+
 
 module.exports = nailTechRouter;
