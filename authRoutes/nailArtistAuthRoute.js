@@ -157,9 +157,7 @@ nailTechRouter.get("/artist", (req, res) => {
 nailTechRouter.put('/artist/:id', async (req, res, next) => {
  const nailTechUpdate = await nailArtist.findByIdAndUpdate(req.params.id, req.body, {new: true})
   if (!nailTechUpdate) {
-    return next(
-      new Error(`No nailartist found`)
-    )
+    return res.status(403).send({success: false, err: "Artist does not exist"})
   }
  res.status(200).send({success: true, nailTechUpdate})
 
