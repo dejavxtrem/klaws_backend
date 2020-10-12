@@ -22,11 +22,23 @@ const nailTechSchema =  mongoose.Schema({
 
 
 
+
+nailTechSchema.methods.checkPassword = function(passwordAttempt, callback) {
+  bcrypt.compare(passwordAttempt, this.password, (err, isMatch) => {
+      if (err) return callback(err);
+      callback(null, isMatch);
+  });
+};
+
+
+
+
 nailTechSchema.pre("save", function (next) {
   const nailTech = this;
+
   if (!nailTech.isModified("password")) {
     return next();
-  }
+  } 
 
   bcrypt.genSalt(10, (err, salt) => {
     if (err) {
@@ -43,20 +55,30 @@ nailTechSchema.pre("save", function (next) {
   });
 });
 
-nailTechSchema.methods.comparePassword = function (nailTechPassword) {
-  const nailTech = this;
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(nailTechPassword, nailTech.password, (err, isMatch) => {
-      if (err) {
-        return reject(err);
-      }
-      if (!isMatch) {
-        return reject(false);
-      }
-      resolve(true);
-    });
-  });
-};
+
+
+// nailTechSchema.methods.comparePassword = function (nailTechPassword) {
+//   console.log(nailTechPassword)
+//   const nailTech = this;
+//   return new Promise((resolve, reject) => {
+//     bcrypt.compare(nailTechPassword, nailTech.password, (err, isMatch) => {
+//       if (err) {
+//         return reject(err);
+//       }
+//       if (!isMatch) {
+//         return reject(false);
+//       }
+    
+//       resolve(true);
+      
+      
+//     });
+//   }).catch() 
+// };
+
+
+
+
 
 nailTechSchema.methods.withoutPassword = function () {
   const nailTech = this.toObject();

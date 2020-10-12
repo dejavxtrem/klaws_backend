@@ -113,30 +113,53 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
  
 });
 
-nailTechRouter.post("/nailtech/login", (req, res) => {
-  console.log(req.body);
-  nailArtist.findOne(
-    { email: req.body.email.toLowerCase() },
-    (err, nailTech) => {
-      const { password } = req.body;
+nailTechRouter.post("/nailtech/login",  async (req, res, next) => {
+
+  try {
+    console.log(req.body);
+    await nailArtist.findOne(
+      { email: req.body.email.toLowerCase() },
+   ( err, nailTech)  => {
+        const { password } = req.body;
       if (err) {
-        return next(err);
+        return res.status(500).send({err: err.message})
       }
-      if (!nailTech) {
-        return res
-          .status(403)
-          .send({ success: false, err: "Username or password are incorrect" });
+
+     if (!nailTech)  {
+      return res.status(403).send({sucess: false, err: "email or password is incorrect"})
+     }
+
+    nailTech.checkPassword(password, (err, match) => { 
+        if (err) return res.status(500).send(err);
+        if (!match) return res.status(401).send({ success: false, message: "Email  or password are incorrect" });
+        const token = jwt.sign(nailTech.withoutPassword(), process.env.SECRET);
+        return res.send({ token: token, nailTech: nailTech.withoutPassword(), success: true })
+    });
+
+    // nailTech.comparePassword(password);
+    // const token = jwt.sign(nailTech.withoutPassword(), process.env.SECRET);
+    // return res.send({
+    //   token: token,
+    //   nailTech: nailTech.withoutPassword(),
+    //   success: true,
+    // });
       }
-      nailTech.comparePassword(password);
-      const token = jwt.sign(nailTech.withoutPassword(), process.env.SECRET);
-      return res.send({
-        token: token,
-        nailTech: nailTech.withoutPassword(),
-        success: true,
-      });
-    }
-  );
+    )
+  } catch (err) {
+    console.log(err)
+    next(err)
+  }
 });
+
+
+
+
+
+
+
+
+
+
 
 nailTechRouter.get("/artist", (req, res) => {
   nailArtist.find((err, artist) => {
@@ -154,14 +177,7 @@ nailTechRouter.get("/artist", (req, res) => {
 });
 
 
-nailTechRouter.patch('/artist/:id', async (req, res, next) => {
- const nailTechUpdate = await nailArtist.updateOne({_id: req.params.id}, {$set: req.body})
-  if (!nailTechUpdate) {
-    return res.status(403).send({success: false, err: "Artist does not exist"})
-  }
- res.status(200).send({success: true, nailTechUpdate})
 
-})
 
 
 
@@ -170,3 +186,4 @@ nailTechRouter.patch('/artist/:id', async (req, res, next) => {
 
 
 module.exports = nailTechRouter;
+
