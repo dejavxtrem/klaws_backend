@@ -28,9 +28,6 @@ const bcrypt = require('bcrypt')
     .catch((err) => res.status(400).send({sucess: false, err: err.message}))
     })
   })
-
-
-
    
   })
 
