@@ -133,7 +133,11 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
             servicePhoto: newArray
         })
         await serviceDetails.save()
-        res.status(200).send(serviceDetails)
+
+        if (serviceDetails) {
+        return res.status(200).send(serviceDetails)
+        }
+        
     } catch (err) {
         res.send({error: err.message})
     }
