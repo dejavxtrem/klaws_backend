@@ -1,6 +1,9 @@
 const express = require("express")
-const userControllerRouter = express.Router()
+const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt')
 const User = require('../models/User')
+const userControllerRouter = express.Router()
+
 
 
 
@@ -34,6 +37,28 @@ userControllerRouter.put('/:id', async (req, res) => {
         res.status(200).json(userDetails)
     })
 })
+
+
+userControllerRouter.patch('/:id', async (req, res) => {
+    let password = req.body.password
+     bcrypt.genSalt(10,   (err, salt) => {
+       if (err) {
+         return next(err)
+       }
+       bcrypt.hash(password, salt, async (err,hash) => {
+         if (err) {
+           return next(err)
+         }
+         req.body.password = hash
+         console.log(req.body)
+   
+       await User.updateOne ({_id: req.params.id}, {$set: req.body})
+       .then((user) => res.status(200).send({success: true, user, }))
+       .catch((err) => res.status(400).send({sucess: false, err: err.message}))
+       })
+     })
+      
+     })
 
 
 module.exports = userControllerRouter

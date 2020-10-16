@@ -16,6 +16,14 @@ const userSchema = mongoose.Schema(
 
 //pre save functions to encrypt password
 
+
+userSchema.methods.checkPassword = function(passwordAttempt, callback) {
+  bcrypt.compare(passwordAttempt, this.password, (err, isMatch) => {
+      if (err) return callback(err);
+      callback(null, isMatch);
+  });
+};
+
 // presave function to check if the user has not modified his password
 userSchema.pre("save", function (next) {
   const user = this;
@@ -38,20 +46,20 @@ userSchema.pre("save", function (next) {
   });
 });
 
-userSchema.methods.comparePassword = function (userPassword) {
-  const user = this;
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(userPassword, user.password, (err, isMatch) => {
-      if (err) {
-        return reject(err);
-      }
-      if (!isMatch) {
-        return reject(false);
-      }
-      resolve(true);
-    });
-  });
-};
+// userSchema.methods.comparePassword = function (userPassword) {
+//   const user = this;
+//   return new Promise((resolve, reject) => {
+//     bcrypt.compare(userPassword, user.password, (err, isMatch) => {
+//       if (err) {
+//         return reject(err);
+//       }
+//       if (!isMatch) {
+//         return reject(false);
+//       }
+//       resolve(true);
+//     });
+//   });
+// };
 
 userSchema.methods.withoutPassword = function () {
   const user = this.toObject();

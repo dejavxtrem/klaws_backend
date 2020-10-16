@@ -112,7 +112,7 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
                  return res.status(500)             
              }
         if(serviceFound !== null) {
-                 res.status(400).send("service already exist")
+                return  res.status(400).send("service already exist")
              }
          })
          
@@ -139,7 +139,7 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
         }
         
     } catch (err) {
-        res.send({error: err.message})
+        return res.send({error: err.message})
     }
 
 })
@@ -147,6 +147,16 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
 
 
 //update a service
+nailServiceRouter.put('/nailService/:id', async (req, res) => {
+    await  nailService.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, nailServiceType ) => {
+        if(err) {
+            return res.status(400).send({error: err.message})
+        }
+        return res.status(200).send(nailServiceType)
+        
+    })
+})
+
 
 
 
@@ -154,14 +164,13 @@ nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (
 
 //delete a service
 nailServiceRouter.delete('/nailService/:id', async (req, res) => {
-    if (artistId === req.user._id) {
         await  nailService.findByIdAndRemove(req.params.id, (err, foundService) => {
             if (err) {
-                res.status(400).send({error: err.message})
+                return res.status(400).send({error: err.message})
             }
-                res.status(200).send(foundService)
+                return res.status(200).send(foundService)
         })
-    }
+    
 })
 
 

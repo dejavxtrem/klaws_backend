@@ -30,9 +30,9 @@ userRouter.post("/user/signup", (req, res, next) => {
   });
 });
 
-userRouter.post("/user/login", (req, res) => {
+userRouter.post("/user/login", async (req, res) => {
   console.log(req.body);
-  User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
+  await User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
     const { password } = req.body;
     if (err) {
       return next(err);
@@ -40,15 +40,25 @@ userRouter.post("/user/login", (req, res) => {
     if (!user) {
       return res
         .status(403)
-        .send({ success: false, err: "Username or password are incorrect" });
+        .send({ success: false, err: "Email or password are incorrect" });
     }
-    user.comparePassword(password);
-    const token = jwt.sign(user.withoutPassword(), process.env.SECRET);
-    return res.send({
-      token: token,
-      user: user.withoutPassword(),
-      success: true,
-    });
+    // user.comparePassword(password);
+    // const token = jwt.sign(user.withoutPassword(), process.env.SECRET);
+    // return res.send({
+    //   token: token,
+    //   user: user.withoutPassword(),
+    //   success: true,
+    // });
+    user.checkPassword(password, (err, match) => { 
+      if (err) return res.status(500).send(err);
+      if (!match) return res.status(401).send({ success: false, message: "Email  or password are incorrect" });
+      const token = jwt.sign(user.withoutPassword(), process.env.SECRET);
+      return res.send({ token: token, user: user.withoutPassword(), success: true })
+  })
+
+
+
+
   });
 });
 
