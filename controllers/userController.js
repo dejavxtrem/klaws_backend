@@ -32,9 +32,9 @@ userControllerRouter.put('/:id', async (req, res) => {
     const id = req.params.id
     await User.findByIdAndUpdate(id, req.body, {new: true}, (err, userDetails) => {
         if (err) {
-            res.status(400).json({error: err.message})
+            return res.status(400).json({error: err.message})
         }
-        res.status(200).json(userDetails)
+        return res.status(200).json(userDetails)
     })
 })
 

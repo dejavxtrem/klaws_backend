@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 
 
 
-//update password controller
+//update artist password controller
  artistProfileRouter.patch('/:id', async (req, res) => {
  let password = req.body.password
   bcrypt.genSalt(10,   (err, salt) => {
@@ -32,5 +32,20 @@ const bcrypt = require('bcrypt')
   })
 
 
+  //update artist profile
+  artistProfileRouter.put('/:id', async ( req, res) => {
+    const id = req.params.id
+    await nailArtist.findByIdAndUpdate(id, req.body, {new: true}, (err, artistData) => {
+        if (err) {
+          return res.status(400).send({error: err.message})
+        }
+        return res.status(200).send({success: true, artistData})
+    })
+  })
+
+
+
+
+  
 
   module.exports = artistProfileRouter

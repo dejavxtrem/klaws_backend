@@ -168,7 +168,7 @@ nailServiceRouter.delete('/nailService/:id', async (req, res) => {
             if (err) {
                 return res.status(400).send({error: err.message})
             }
-                return res.status(200).send(foundService)
+                return res.status(200).send({sucess: true, foundService})
         })
     
 })
