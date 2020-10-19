@@ -172,7 +172,7 @@ nailTechRouter.get("/artist", (req, res) => {
         .status(403)
         .send({ success: false, err: "there is no any artist registered" });
     }
-    return res.send({ success: true, artist });
+    return res.send({ success: true, artist: nailTech.withoutPassword()});
   });
 });
 

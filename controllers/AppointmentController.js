@@ -45,11 +45,20 @@ appointmentRouter.get('/usersappointments', async (req, res) => {
 })
 
 //get all the appointments for an artist
-// appointmentRouter.get('/artistappointments', async () => {
-//     try {
-//         const artistappointments = await appointment.find({artistId: })
-//     }
-// })
+appointmentRouter.get('/artistappointments', async (req, res) => {
+    try {
+        const artistappointments = await appointment.find({artistId: req.body.artistId})
+        if (artistappointments) {
+            return res.status(200).send({success: true, artistappointments})
+        }
+        if (!artistappointments) {
+            return res.status(422).send({success: false, error: "artist does not exist"})
+        }
+    }
+    catch (err) {
+        return res.status(400).send({error: err.message})
+    }
+})
 
 
 
