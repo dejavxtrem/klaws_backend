@@ -103,6 +103,9 @@ nailServiceRouter.get('/nailService/:id', async (req, res) => {
 })
 
 
+//get nailservice for particular artist
+
+
 //post new service
 nailServiceRouter.post('/nailService', upload.array("servicePhoto", 5 ), async (req, res, next) => {
     console.log(req.files)
