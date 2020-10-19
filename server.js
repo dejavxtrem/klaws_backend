@@ -16,6 +16,7 @@ const userControllerRouter = require('./controllers/userController')
 const userAvatarRouter = require('./controllers/userAvatar')
 const nailServiceRouter = require('./controllers/addNailService')
 const artistProfileRouter = require('./controllers/artistProfileController')
+const appointmentRouter = require('./controllers/AppointmentController')
 
 
 
@@ -50,6 +51,7 @@ app.use("/api/useraccount", userControllerRouter)
 app.use("/api/useravatar", userAvatarRouter)
 app.use("/api/nailartist", nailServiceRouter )
 app.use("/api/artistProfile", artistProfileRouter)
+app.use("/api/bookings", appointmentRouter)
 
 app.use((err, req, res, next) => {
     console.error(err);

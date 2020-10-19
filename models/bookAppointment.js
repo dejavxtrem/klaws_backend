@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { model } = require('./addService')
-const { model } = require('./User')
+//const { model } = require('./User')
 
 const appointmentSchema = new mongoose.Schema({
     service: {
@@ -11,10 +11,15 @@ const appointmentSchema = new mongoose.Schema({
     slot_time: {type: String, required: true},
     slot_date: {type: String, required: true},
     created_at: {type: Date},
-    created_by: {
+    created_ByUserId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
+    },
+    artistId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'nailArtist'
     },
     total: {type: String}
 })
