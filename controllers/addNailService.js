@@ -87,20 +87,7 @@ nailServiceRouter.get('/nailService', async (req, res) => {
 })
 
 //get services for particular artist
-nailServiceRouter.get('/artistnailService', async (req, res) => {
 
-    try {
-    const artistServices = await nailService.find({artistId: req.body.artistId})
-
-    if (artistServices) {
-        return res.status(200).send({success: true, artistServices})
-    }
-    }
-    catch (err) {
-        return res.status(422).send({error: err.message})
-    }
-    
-})
 
 //get a particular service 
 nailServiceRouter.get('/nailService/:id', async (req, res) => {

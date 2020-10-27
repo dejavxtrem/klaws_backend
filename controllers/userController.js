@@ -2,6 +2,7 @@ const express = require("express")
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
+const nailService = require('../models/addService')
 const userControllerRouter = express.Router()
 
 
@@ -59,6 +60,15 @@ userControllerRouter.patch('/:id', async (req, res) => {
      })
       
      })
+
+
+   
+
+
+
+
+
+
 
 
 module.exports = userControllerRouter

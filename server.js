@@ -17,6 +17,7 @@ const userAvatarRouter = require('./controllers/userAvatar')
 const nailServiceRouter = require('./controllers/addNailService')
 const artistProfileRouter = require('./controllers/artistProfileController')
 const appointmentRouter = require('./controllers/AppointmentController')
+const userGetArtistDataRouter = require('./controllers/userGetArtistDataRouter')
 
 
 
@@ -50,6 +51,7 @@ app.use('/upload', express.static('uploads'));
 app.use("/api/useraccount", userControllerRouter)
 app.use("/api/useravatar", userAvatarRouter)
 app.use("/api/nailartist", nailServiceRouter )
+app.use("/api/nailartist/user", userGetArtistDataRouter) //middleware for user to gain access to artist  servicedata
 app.use("/api/artistProfile", artistProfileRouter)
 app.use("/api/bookings", appointmentRouter)
 
