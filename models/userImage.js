@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const User = require('./User.js')
+//const User = require('./User.js')
 
 const userImage = mongoose.Schema({
         userId: {
@@ -7,7 +7,7 @@ const userImage = mongoose.Schema({
             required: true,
             ref: 'User'
         },
-        userimage: {type: String}
+        userImage: {type: String}
     
 })
 
