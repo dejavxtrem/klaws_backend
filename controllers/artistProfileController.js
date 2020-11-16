@@ -25,7 +25,7 @@ const bcrypt = require('bcrypt')
 
     await nailArtist.updateOne ({_id: req.params.id}, {$set: req.body})
     .then((nailTech) => res.status(200).send({success: true, nailTech, }))
-    .catch((err) => res.status(400).send({sucess: false, err: err.message}))
+    .catch((err) => res.status(400).send({success: false, err: err.message}))
     })
   })
    
@@ -40,7 +40,7 @@ const bcrypt = require('bcrypt')
           return res.status(400).send({error: err.message})
         }
         return res.status(200).send({success: true, artistData})
-    })
+    }).catch((err) => res.status(404).send({success: false, error: err.message}))
   })
 
 

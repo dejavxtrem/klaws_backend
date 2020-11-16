@@ -55,7 +55,7 @@ userControllerRouter.patch('/:id', async (req, res) => {
    
        await User.updateOne ({_id: req.params.id}, {$set: req.body})
        .then((user) => res.status(200).send({success: true, user, }))
-       .catch((err) => res.status(400).send({sucess: false, err: err.message}))
+       .catch((err) => res.status(400).send({success: false, err: err.message}))
        })
      })
       

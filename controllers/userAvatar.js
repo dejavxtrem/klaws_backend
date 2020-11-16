@@ -76,7 +76,7 @@ userAvatarRouter.get('/upload/:id', async (req, res) =>{
     }
      try {
         const  userProfile = await userImage.find({userId: req.user._id})
-        return res.status(200).json(userProfile)
+        return res.status(200).send({success: true, userProfile})
      } catch (err) {
             res.status(500).json({error: err.message})
      }
@@ -103,7 +103,7 @@ userAvatarRouter.post('/upload', upload.single('userImage'), async (req, res) =>
             userImage: req.file.location
          })
          await userProfile.save()
-         return res.status(200).json(userProfile)
+         return res.status(200).send({success:true, userProfile})
      } catch (err) {
          res.status(500).json({ error: err.message})
      }
