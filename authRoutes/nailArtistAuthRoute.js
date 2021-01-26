@@ -81,7 +81,7 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
         //console.log(timeSlots)
 
         const newArtist =  new nailArtist({
-          //avatar: req.file.location,
+          avatar: req.file.location,
           name: req.body.name,
           type: req.body.type,
           email: req.body.email,
