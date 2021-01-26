@@ -1,6 +1,15 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
+
+const availableTimesSchema = mongoose.Schema({
+   weekday: {type: String, required: true},
+   morning: { type: String, required: true},
+   afternoon: {type: String, required: true}
+})
+
+
+
 const nailTechSchema =  mongoose.Schema({
     avatar: {type: String},
     name: {type: String, required: true},
@@ -12,6 +21,7 @@ const nailTechSchema =  mongoose.Schema({
     city: { type: String, required: true},
     state: { type: String, required: true},
     zipcode: {type: String, required: true},
+    availabletimes: [availableTimesSchema],
     openinghour: {type: String, required: true},
     closinghour: {type: String, requied: true},
     artistLat: { type: String },
