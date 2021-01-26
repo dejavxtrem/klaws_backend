@@ -61,23 +61,27 @@ const upload = multer({
 
 
 nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => {
-  console.log('body', req.body)
+  //console.log('body', req.body)
   //console.log('file', req.file)
 
 
   nailArtist.findOne({ email: req.body.email }, async (err, existingTech) => {
-      if (err) {
-        res.status(500);
-        return next(err);
-      }
-      if (existingTech !== null) {
-        res.status(400);
-        return next (new Error("That email already exists!"));
-      }
   
       try {
+
+        if (existingTech !== null) {
+          res.status(400);
+          throw  new Error("That email already exists!");
+        }
+        
+        const { availabletimes } = req.body
+        let timeSlots = []
+        timeSlots.push(...availabletimes)
+  
+        //console.log(timeSlots)
+
         const newArtist =  new nailArtist({
-          avatar: req.file.location,
+          //avatar: req.file.location,
           name: req.body.name,
           type: req.body.type,
           email: req.body.email,
@@ -91,7 +95,8 @@ nailTechRouter.post("/nailtech/signup",  upload.single('avatar'), (req, res) => 
           closinghour: req.body.closinghour,
           artistLat: req.body.artistLat,
           artistLong: req.body.artistLong,
-          accuracy: req.body.accuracy
+          accuracy: req.body.accuracy,    
+          availabletimes: timeSlots
         });
   
         await newArtist.save()
